@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veritas English</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2340;
+    --ink-soft:#2C3654;
+    --paper:#ECE6D6;
+    --paper-light:#F6F2E7;
+    --white:#FDFCF8;
+    --gold:#B8892B;
+    --gold-soft:#DDC383;
+    --teal:#2E6E62;
+    --teal-soft:#CFE1DC;
+    --coral:#B24C3A;
+    --muted:#8B8570;
+    --line: rgba(27,35,64,0.14);
+    --shadow: 0 10px 30px rgba(27,35,64,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:290px;
+    flex-shrink:0;
+    background:var(--ink);
+    color:var(--paper-light);
+    padding:28px 20px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding-bottom:16px;
+    border-bottom:1px solid rgba(246,242,231,0.16);
+  }
+  .brand .mark{
+    font-family:'Fraunces', serif;
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:0.3px;
+  }
+  .brand .mark em{ color:var(--gold-soft); font-style:normal; }
+  .brand .tagline{
+    font-size:12.5px;
+    color:rgba(246,242,231,0.6);
+    font-style:italic;
+    font-family:'Fraunces', serif;
+  }
+  .level-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    overflow-y:auto;
+  }
+  .level-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:background .15s ease, border-color .15s ease;
+    position:relative;
+  }
+  .level-card:hover{ background:rgba(246,242,231,0.06); }
+  .level-card.active{
+    background:rgba(184,137,43,0.14);
+    border-color:rgba(184,137,43,0.5);
+  }
+  .level-card.locked{ opacity:0.42; cursor:not-allowed; }
+  .level-badge{
+    width:38px;height:38px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600; font-size:13px;
+    background:var(--ink-soft);
+    color:var(--gold-soft);
+    flex-shrink:0;
+    border:1px solid rgba(221,195,131,0.35);
+  }
+  .level-card.active .level-badge{ background:var(--gold); color:var(--ink); }
+  .level-meta{ flex:1; min-width:0; }
+  .level-meta .name{ font-size:13.5px; font-weight:600; }
+  .level-meta .sub{ font-size:11px; color:rgba(246,242,231,0.55); }
+  .level-progress-track{
+    margin-top:5px; height:4px; border-radius:2px;
+    background:rgba(246,242,231,0.15); overflow:hidden;
+  }
+  .level-progress-fill{ height:100%; background:var(--gold-soft); border-radius:2px; }
+  .lock-icon{ font-size:14px; opacity:.8; }
+  .sidebar-footer{
+    margin-top:auto;
+    padding-top:14px;
+    border-top:1px solid rgba(246,242,231,0.16);
+    font-size:11px;
+    color:rgba(246,242,231,0.45);
+    line-height:1.5;
+  }
+  .reset-btn{
+    margin-top:10px;
+    width:100%;
+    background:transparent;
+    border:1px solid rgba(246,242,231,0.25);
+    color:rgba(246,242,231,0.75);
+    padding:8px;
+    border-radius:8px;
+    font-size:11.5px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .reset-btn:hover{ border-color:var(--coral); color:var(--coral); }
+
+  /* ---------- Main ---------- */
+  .main{
+    flex:1;
+    padding:34px 44px 60px;
+    max-width:1040px;
+  }
+  .main-header{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:6px; gap:20px; flex-wrap:wrap;
+  }
+  .main-header h1{
+    font-family:'Fraunces', serif;
+    font-size:34px; font-weight:700; margin:0;
+  }
+  .main-header .desc{ color:var(--muted); font-size:14px; margin-top:6px; max-width:560px; }
+  .overall{
+    text-align:right;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .overall .num{ font-size:22px; font-weight:600; color:var(--teal); }
+  .overall .lbl{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  .level-progress-row{
+    display:flex; align-items:center; gap:14px;
+    margin:22px 0 30px;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 18px;
+  }
+  .level-progress-row .track{
+    flex:1; height:8px; background:var(--paper); border-radius:6px; overflow:hidden;
+  }
+  .level-progress-row .fill{ height:100%; background:linear-gradient(90deg, var(--teal), var(--gold)); border-radius:6px; transition:width .3s ease;}
+  .level-progress-row .count{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; white-space:nowrap; }
+
+  .path-wrap{
+    display:flex; flex-direction:column; gap:26px;
+  }
+  .block{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px 22px 22px;
+  }
+  .block-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.08em;
+    margin-bottom:14px;
+  }
+  .node-row{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  }
+  .node{
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; font-weight:600;
+    cursor:pointer;
+    border:2px solid var(--line);
+    background:var(--paper-light);
+    color:var(--muted);
+    transition: transform .12s ease, box-shadow .12s ease;
+    flex-shrink:0;
+  }
+  .node:hover{ transform:translateY(-2px); }
+  .node.completed{
+    background:var(--teal); border-color:var(--teal); color:var(--white);
+  }
+  .node.unlocked{
+    background:var(--white); border-color:var(--teal); color:var(--teal);
+    box-shadow:0 0 0 3px var(--teal-soft);
+  }
+  .node.locked{
+    cursor:not-allowed; color:var(--muted); opacity:.55;
+  }
+  .node.locked:hover{ transform:none; }
+  .node-connector{
+    width:14px; height:2px; background:var(--line); flex-shrink:0;
+  }
+  /* exam stamp node */
+  .stamp{
+    width:58px; height:58px; border-radius:50%;
+    flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    border:3px double var(--gold);
+    background: var(--paper-light);
+    color:var(--gold);
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    transform:rotate(-6deg);
+    cursor:pointer;
+    transition: transform .15s ease;
+    position:relative;
+  }
+  .stamp:hover{ transform:rotate(-6deg) scale(1.05); }
+  .stamp .exlbl{ font-size:8px; letter-spacing:.06em; font-family:'IBM Plex Mono',monospace; font-weight:600; }
+  .stamp .exnum{ font-size:15px; line-height:1; }
+  .stamp.completed{
+    background:var(--gold); color:var(--ink); border-color:var(--ink);
+  }
+  .stamp.locked{
+    opacity:.4; cursor:not-allowed;
+  }
+  .stamp.locked:hover{ transform:rotate(-6deg); }
+
+  /* ---------- Modal ---------- */
+  .login-overlay{
+    position:fixed; inset:0; background:rgba(27,35,64,0.75);
+    display:flex; align-items:center; justify-content:center;
+    z-index:100; padding:20px;
+  }
+  .login-box{
+    background:var(--white); border-radius:18px; width:100%; max-width:420px;
+    padding:26px; box-shadow:var(--shadow);
+  }
+  .login-box h2{ margin:0 0 10px; font-family:'Fraunces', serif; font-size:22px; }
+  .login-box form{ display:flex; flex-direction:column; gap:14px; }
+  .login-field{ display:flex; flex-direction:column; }
+  .login-box label{ display:block; font-size:13px; color:var(--ink-soft); }
+  .login-box input{ width:100%; margin-top:8px; padding:12px 14px; border:1.5px solid var(--line); border-radius:10px; font-size:14px; }
+  .password-input-wrap{ position:relative; }
+  .password-toggle{ position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:none; color:var(--ink-soft); cursor:pointer; font-size:13px; padding:0; }
+  .login-box .login-actions{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .login-box .login-error{ margin-top:12px; color:var(--coral); font-size:13px; min-height:18px; }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(27,35,64,0.55);
+    display:flex; align-items:center; justify-content:center;
+    z-index:50; padding:20px;
+  }
+  .modal{
+    background:var(--white);
+    border-radius:16px;
+    width:100%; max-width:560px;
+    max-height:88vh; overflow-y:auto;
+    box-shadow:var(--shadow);
+  }
+  .modal-head{
+    padding:20px 26px 14px;
+    border-bottom:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .modal-head h2{ font-family:'Fraunces', serif; font-size:20px; margin:0; }
+  .modal-close{
+    background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted);
+    width:30px;height:30px; border-radius:50%;
+  }
+  .modal-close:hover{ background:var(--paper); }
+  .modal-body{ padding:22px 26px 26px; }
+  .qtext{ font-size:16px; font-weight:600; margin-bottom:16px; line-height:1.4; }
+  .options{ display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
+  .opt{
+    text-align:left;
+    padding:11px 14px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:var(--paper-light);
+    cursor:pointer;
+    font-size:14.5px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+  }
+  .opt:hover{ border-color:var(--teal); }
+  .opt.selected{ border-color:var(--teal); background:var(--teal-soft); }
+  .opt.correct{ border-color:var(--teal); background:var(--teal-soft); }
+  .opt.incorrect{ border-color:var(--coral); background:#F3E1DC; }
+  .primary-btn{
+    background:var(--ink); color:var(--white);
+    border:none; padding:11px 20px; border-radius:9px;
+    font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .primary-btn:hover{ background:var(--ink-soft); }
+  .primary-btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .ghost-btn{
+    background:none; border:1.5px solid var(--line); padding:10px 18px;
+    border-radius:9px; font-size:14px; cursor:pointer; color:var(--ink); font-family:'Inter',sans-serif;
+  }
+  .feedback{ font-size:13.5px; margin-top:10px; font-weight:600; }
+  .feedback.ok{ color:var(--teal); }
+  .feedback.bad{ color:var(--coral); }
+
+  .tabs{ display:flex; gap:6px; margin-bottom:18px; }
+  .tab{
+    flex:1; text-align:center; padding:9px 6px; border-radius:8px;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+    background:var(--paper-light); color:var(--muted);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .tab.active{ background:var(--ink); color:var(--white); }
+  .tab.done{ background:var(--teal); color:var(--white); }
+
+  .listen-box{
+    display:flex; align-items:center; gap:12px;
+    background:var(--paper-light); border-radius:10px; padding:14px; margin-bottom:16px;
+  }
+  .listen-btn{
+    width:44px;height:44px;border-radius:50%; background:var(--teal); color:var(--white);
+    border:none; font-size:18px; cursor:pointer; flex-shrink:0;
+  }
+  .listen-btn:hover{ background:var(--ink); }
+  .listen-hint{ font-size:12.5px; color:var(--muted); }
+
+  textarea.write-area{
+    width:100%; min-height:140px; border:1.5px solid var(--line); border-radius:10px;
+    padding:12px 14px; font-family:'Inter',sans-serif; font-size:14px; resize:vertical;
+  }
+  textarea.write-area:focus{ outline:none; border-color:var(--teal); }
+  .wc{ font-size:12px; color:var(--muted); margin-top:6px; font-family:'IBM Plex Mono',monospace;}
+
+  .exam-summary{ text-align:center; padding:10px 0; }
+  .exam-summary .big-icon{ font-size:44px; margin-bottom:10px; }
+  .exam-summary h3{ font-family:'Fraunces', serif; font-size:22px; margin:0 0 6px; }
+  .exam-summary p{ color:var(--muted); font-size:13.5px; margin:0 0 18px; }
+  .score-row{ display:flex; justify-content:center; gap:22px; margin-bottom:20px; }
+  .score-item{ text-align:center; }
+  .score-item .v{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:18px; }
+  .score-item .l{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+
+  .shadowing-panel{
+    margin:22px 0 30px;
+    background:linear-gradient(135deg, var(--white), var(--paper-light));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .shadowing-panel h3{ font-family:'Fraunces', serif; font-size:20px; margin:0; }
+  .shadowing-panel p{ margin:0; color:var(--muted); font-size:14px; }
+  .shadowing-pills{ display:flex; flex-wrap:wrap; gap:8px; }
+  .shadowing-pill{ background:var(--teal-soft); color:var(--teal); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .shadowing-phrase{ background:var(--ink); color:var(--white); padding:13px 14px; border-radius:10px; font-size:15px; line-height:1.45; }
+  .shadowing-meta{ color:var(--muted); font-size:12.5px; }
+  .shadowing-actions{ display:flex; flex-wrap:wrap; gap:10px; }
+  .shadowing-status{ font-size:13px; color:var(--ink-soft); }
+  .shadowing-score{ display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; }
+  .shadowing-score .score-item{ background:var(--paper-light); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  .shadowing-tip{ padding:10px 12px; border-radius:10px; background:var(--paper-light); border:1px solid var(--line); font-size:13px; color:var(--ink-soft); }
+
+  .scene-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:10px; }
+  .scene-card{ background:var(--paper-light); border:1px solid var(--line); border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; }
+  .scene-card .thumb{ height:90px; border-radius:10px; background:linear-gradient(135deg, var(--teal), var(--gold)); display:flex; align-items:center; justify-content:center; color:var(--white); font-size:28px; }
+  .scene-card .title{ font-weight:600; color:var(--ink); font-size:13px; }
+  .scene-card .meta{ font-size:11.5px; color:var(--muted); }
+
+  .module-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:12px;
+    margin:22px 0 30px;
+  }
+  .module-card{
+    background:linear-gradient(135deg, var(--white), var(--paper-light));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .module-card .icon{ font-size:22px; }
+  .module-card .title{ font-weight:700; color:var(--ink); }
+  .module-card .desc{ color:var(--muted); font-size:13px; line-height:1.45; }
+  .module-card .chip{ display:inline-block; width:max-content; padding:5px 8px; border-radius:999px; background:var(--teal-soft); color:var(--teal); font-size:11px; font-weight:600; }
+
+  .story-panel{
+    margin:22px 0 30px;
+    background:linear-gradient(135deg, var(--white), var(--paper-light));
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .roleplay-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; }
+  .roleplay-card{ background:var(--paper-light); border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .roleplay-card .title{ font-weight:600; color:var(--ink); }
+  .roleplay-card .meta{ font-size:12px; color:var(--muted); line-height:1.45; }
+  .roleplay-card .tag{ display:inline-block; width:max-content; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:600; background:var(--teal-soft); color:var(--teal); }
+  .roleplay-scene{ background:var(--ink); color:var(--white); border-radius:12px; padding:14px; line-height:1.6; }
+  .roleplay-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+  .roleplay-feedback{ background:var(--paper-light); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--ink-soft); }
+  .story-panel h3{ font-family:'Fraunces', serif; font-size:20px; margin:0; }
+  .story-panel p{ margin:0; color:var(--muted); font-size:14px; }
+  .story-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; }
+  .story-card{ background:var(--paper-light); border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; }
+  .story-card .title{ font-weight:600; color:var(--ink); }
+  .story-card .meta{ font-size:12px; color:var(--muted); }
+  .story-card .tag{ display:inline-block; width:max-content; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:600; background:var(--teal-soft); color:var(--teal); }
+  .story-content{ background:var(--white); border:1px solid var(--line); border-radius:14px; padding:16px; line-height:1.7; color:var(--ink-soft); }
+  .story-vocab{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .story-vocab .word{ background:var(--paper-light); border:1px solid var(--line); border-radius:999px; padding:6px 9px; font-size:12px; cursor:pointer; }
+  .story-quiz{ display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .story-quiz .opt{ text-align:left; }
+  .story-feedback{ margin-top:8px; font-size:13px; color:var(--teal); }
+
+  @media (max-width: 820px){
+    .app{ flex-direction:column; }
+    .sidebar{ width:100%; flex-direction:row; overflow-x:auto; align-items:center; padding:14px; }
+    .brand{ display:none; }
+    .level-list{ flex-direction:row; }
+    .level-card{ flex-direction:column; min-width:96px; text-align:center; }
+    .sidebar-footer{ display:none; }
+    .main{ padding:24px 18px 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">Veritas <em>English</em></div>
+      <div class="tagline">Aprende con integridad, nivel a nivel.</div>
+    </div>
+    <div class="level-list" id="levelList"></div>
+    <div class="sidebar-footer">
+      Cada nivel tiene 50 escalones. Cada 10, un examen oral, gramatical y escrito certifica tu avance real — sin atajos.
+      <button class="reset-btn" id="resetBtn">Reiniciar progreso de la sesión</button>
+    </div>
+  </aside>
+
+  <main class="main" id="main"></main>
+</div>
+
+<div id="modalRoot"></div>
+<div id="loginRoot"></div>
+
+<script>
+/* ============ CONTENT ============ */
+const LEVEL_ORDER = ['A1','A2','B1','B2','C1','C2'];
+const LEVEL_INFO = {
+  A1:{name:'Principiante'}, A2:{name:'Elemental'}, B1:{name:'Intermedio'},
+  B2:{name:'Intermedio alto'}, C1:{name:'Avanzado'}, C2:{name:'Maestría'}
+};
+
+const CONTENT = {
+A1:{
+  vocab:[['hello','hola'],['goodbye','adiós'],['please','por favor'],['thank you','gracias'],['water','agua'],
+  ['house','casa'],['cat','gato'],['dog','perro'],['food','comida'],['friend','amigo'],['family','familia'],
+  ['school','escuela'],['book','libro'],['day','día'],['night','noche'],['red','rojo'],['blue','azul'],
+  ['big','grande'],['small','pequeño'],['happy','feliz']],
+  grammar:[
+   {q:'She ___ a teacher.',o:['is','are','am'],a:'is'},
+   {q:'I ___ from Spain.',o:['is','am','are'],a:'am'},
+   {q:'They ___ students.',o:['is','am','are'],a:'are'},
+   {q:'This is ___ apple.',o:['a','an','the'],a:'an'},
+   {q:'He ___ like coffee.',o:["don't","doesn't","isn't"],a:"doesn't"},
+   {q:'We ___ to school every day.',o:['go','goes','going'],a:'go'},
+   {q:'___ you like pizza?',o:['Do','Does','Is'],a:'Do'},
+   {q:'The cat is ___ the table.',o:['in','on','at'],a:'on'}],
+  writing:{prompt:'Describe a tu familia en frases simples en inglés (usa "is", "are", "have").', min:10}
+},
+A2:{
+  vocab:[['yesterday','ayer'],['tomorrow','mañana'],['always','siempre'],['never','nunca'],['because','porque'],
+  ['although','aunque'],['weather','clima'],['journey','viaje'],['kitchen','cocina'],['bedroom','dormitorio'],
+  ['expensive','caro'],['cheap','barato'],['arrive','llegar'],['leave','salir'],['remember','recordar'],
+  ['forget','olvidar'],['decide','decidir'],['promise','prometer'],['borrow','pedir prestado'],['neighbor','vecino']],
+  grammar:[
+   {q:'I ___ my homework already.',o:['have finished','has finished','finished have'],a:'have finished'},
+   {q:'She ___ to Paris last year.',o:['go','went','gone'],a:'went'},
+   {q:'If it rains, I ___ stay home.',o:['will','would','am'],a:'will'},
+   {q:'He is ___ than his brother.',o:['tall','taller','tallest'],a:'taller'},
+   {q:'We ___ watching TV when you called.',o:['are','were','was'],a:'were'},
+   {q:'There ___ a lot of people.',o:['is','are','be'],a:'are'},
+   {q:'She has been living here ___ 2020.',o:['since','for','from'],a:'since'},
+   {q:'Can you tell me ___ the station is?',o:['where','what','who'],a:'where'}],
+  writing:{prompt:'Write about your daily routine in English, using connectors like "then" and "after that".', min:20}
+},
+B1:{
+  vocab:[['achieve','lograr'],['environment','medio ambiente'],['opportunity','oportunidad'],['responsibility','responsabilidad'],
+  ['encourage','animar'],['avoid','evitar'],['improve','mejorar'],['suggest','sugerir'],['complain','quejarse'],
+  ['argument','discusión'],['benefit','beneficio'],['challenge','desafío'],['communicate','comunicar'],
+  ['consider','considerar'],['describe','describir'],['develop','desarrollar'],['expect','esperar'],
+  ['influence','influir'],['prevent','prevenir'],['recommend','recomendar']],
+  grammar:[
+   {q:'If I ___ more time, I would travel more.',o:['have','had','has'],a:'had'},
+   {q:'The report ___ by the manager yesterday.',o:['wrote','was written','is writing'],a:'was written'},
+   {q:'I wish I ___ how to swim.',o:['know','knew','known'],a:'knew'},
+   {q:'She suggested ___ the meeting.',o:['to postpone','postponing','postpone'],a:'postponing'},
+   {q:'By next year, I ___ here for a decade.',o:['will work','will have worked','work'],a:'will have worked'},
+   {q:'He apologized ___ being late.',o:['for','to','about'],a:'for'},
+   {q:'Despite ___ hard, he failed.',o:['study','studying','studied'],a:'studying'},
+   {q:'The book, ___ I borrowed, was great.',o:['that','which','who'],a:'which'}],
+  writing:{prompt:'Describe an environmental problem in your city and propose a solution in English.', min:40}
+},
+B2:{
+  vocab:[['nevertheless','sin embargo'],['consequently','por consiguiente'],['controversy','controversia'],
+  ['sustainable','sostenible'],['accountability','rendición de cuentas'],['ambiguous','ambiguo'],
+  ['comprehensive','integral'],['discrepancy','discrepancia'],['feasible','factible'],['implication','implicación'],
+  ['integrity','integridad'],['legitimate','legítimo'],['perspective','perspectiva'],['plausible','plausible'],
+  ['rigorous','riguroso'],['subsequent','posterior'],['thorough','minucioso'],['undermine','socavar'],
+  ['viable','viable'],['coherent','coherente']],
+  grammar:[
+   {q:'Had I known, I ___ differently.',o:['would act','would have acted','acted'],a:'would have acted'},
+   {q:'The proposal is subject ___ approval.',o:['to','for','on'],a:'to'},
+   {q:'Rarely ___ such dedication.',o:['I have seen','have I seen','I saw'],a:'have I seen'},
+   {q:'She insisted that he ___ present.',o:['is','be','was'],a:'be'},
+   {q:'Not only ___ late, but he forgot the documents.',o:['he was','was he','he is'],a:'was he'},
+   {q:'The findings ___ to be inconclusive.',o:['turned out','turned in','turned up'],a:'turned out'},
+   {q:"It's high time we ___ the issue.",o:['address','addressed','addressing'],a:'addressed'},
+   {q:'Little ___ that his idea would work.',o:['did they know','they knew','knew they'],a:'did they know'}],
+  writing:{prompt:'Argue for or against remote work, giving at least two reasons, in English.', min:60}
+},
+C1:{
+  vocab:[['nuanced','matizado'],['discern','discernir'],['mitigate','mitigar'],['ubiquitous','omnipresente'],
+  ['pragmatic','pragmático'],['resilience','resiliencia'],['transparency','transparencia'],['empirical','empírico'],
+  ['paradox','paradoja'],['precedent','precedente'],['scrutiny','escrutinio'],['synthesis','síntesis'],
+  ['tenuous','tenue'],['unequivocal','inequívoco'],['discretion','discreción'],['inherent','inherente'],
+  ['meticulous','meticuloso'],['prevailing','predominante'],['substantiate','fundamentar'],['candid','franco']],
+  grammar:[
+   {q:'___ the circumstances, the decision was justified.',o:['Given','Giving','Give'],a:'Given'},
+   {q:"The committee's ruling was met with considerable ___.",o:['skepticism','skeptic','skeptical'],a:'skepticism'},
+   {q:'So ___ was the evidence that the jury acquitted him.',o:['compelling','compel','compelled'],a:'compelling'},
+   {q:'Were it not for his intervention, the deal ___ collapsed.',o:['would have','will have','had'],a:'would have'},
+   {q:'The article ___ into the ethical implications of AI.',o:['delves','delve','delving'],a:'delves'},
+   {q:'His argument, ___ plausible, lacked empirical support.',o:['while','despite','because'],a:'while'},
+   {q:'She is renowned ___ her meticulous research.',o:['for','of','by'],a:'for'},
+   {q:'Only after much deliberation ___ the panel reach a verdict.',o:['did','does','had'],a:'did'}],
+  writing:{prompt:'Analyze the ethical implications of artificial intelligence in English.', min:80}
+},
+C2:{
+  vocab:[['quintessential','por excelencia'],['ephemeral','efímero'],['juxtaposition','yuxtaposición'],
+  ['ostensible','aparente'],['esoteric','esotérico'],['cogent','convincente'],['ineffable','inefable'],
+  ['perfunctory','superficial'],['sagacious','sagaz'],['vindicate','reivindicar'],['obfuscate','ofuscar'],
+  ['capricious','caprichoso'],['magnanimous','magnánimo'],['fortuitous','fortuito'],['equivocal','equívoco'],
+  ['insidious','insidioso'],['laconic','lacónico'],['mercurial','cambiante'],['abstruse','abstruso'],['panacea','panacea']],
+  grammar:[
+   {q:'The nuance of his argument was largely lost ___ the audience.',o:['on','to','at'],a:'on'},
+   {q:'Such ___ claims require substantial corroboration.',o:['sweeping','sweep','swept'],a:'sweeping'},
+   {q:'He remained impervious ___ criticism.',o:['to','of','for'],a:'to'},
+   {q:"The novel's ending was deliberately ___, inviting multiple interpretations.",o:['ambiguous','ambiguity','ambiguously'],a:'ambiguous'},
+   {q:'Never before ___ such a paradox been so elegantly resolved.',o:['has','have','had'],a:'had'},
+   {q:'Her prose, though dense, is remarkably ___.',o:['lucid','lucidity','lucidly'],a:'lucid'},
+   {q:'The findings ___ the prevailing consensus.',o:['contradict','contradicted','contradiction'],a:'contradict'},
+   {q:'Not until decades later ___ the truth emerge.',o:['did','would','does'],a:'did'}],
+  writing:{prompt:'Write a short essay on moral ambiguity in contemporary literature in English.', min:100}
+}
+};
+
+const STOPWORDS = ['the','is','and','in','to','of','that','with','for','on','was','are','it','this','because','but','have','has','not','as','at','by'];
+const GOAL_OPTIONS = {
+  travel:'Inglés para viajar',
+  work:'Inglés para trabajar',
+  interviews:'Inglés para entrevistas',
+  university:'Inglés para universidad',
+  business:'Inglés para negocios',
+  conversation:'Inglés para conversación'
+};
+const DEFAULT_CREDENTIALS = { username:'veritas', password:'clave123', goal:'conversation', englishLevel:'A1', targetLevel:'A1' };
+function loadCredentials(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('Credentials'));
+    return saved ? { ...DEFAULT_CREDENTIALS, ...saved } : DEFAULT_CREDENTIALS;
+  }
+  catch(e){ return DEFAULT_CREDENTIALS; }
+}
+function saveCredentials(creds){ localStorage.setItem('Credentials', JSON.stringify(creds)); }
+
+function isAuthenticated(){ return sessionStorage.getItem('loggedIn')==='true'; }
+function showLoginScreen(mode='login'){
+  const creds = loadCredentials();
+  const root = document.getElementById('loginRoot');
+  root.innerHTML = `
+    <div class="login-overlay" id="loginOverlay">
+      <div class="login-box">
+        <h2>${mode==='login' ? 'Inicia sesión' : 'Crea tu cuenta'}</h2>
+        <div style="font-size:14px; color:var(--muted); margin-bottom:18px;">
+          ${mode==='login' ? 'Ingresa tu usuario y contraseña para continuar con la ruta de aprendizaje.' : 'Elige un usuario y contraseña nuevos para comenzar.'}
+        </div>
+        <form id="loginForm">
+          <div class="login-field">
+            <label for="username">Usuario</label>
+            <input id="username" name="username" type="text" autocomplete="username" value="${mode==='login' ? creds.username : ''}" required />
+          </div>
+          <div class="login-field password-input-wrap">
+            <label for="password">Contraseña</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+            <button type="button" class="password-toggle" data-target="password">Mostrar</button>
+          </div>
+          ${mode==='register' ? `<div class="login-field">
+            <label for="englishLevel">¿Qué nivel de inglés tienes?</label>
+            <select id="englishLevel" name="englishLevel" required>
+              ${LEVEL_ORDER.map(level=>`<option value="${level}" ${level==='A1' ? 'selected' : ''}>${level}</option>`).join('')}
+            </select>
+          </div>` : ''}
+          ${mode==='register' ? `<div class="login-field">
+            <label for="targetLevel">¿Qué nivel quieres seguir?</label>
+            <select id="targetLevel" name="targetLevel" required>
+              ${LEVEL_ORDER.map(level=>`<option value="${level}" ${level==='A1' ? 'selected' : ''}>${level}</option>`).join('')}
+            </select>
+          </div>` : ''}
+          ${mode==='register' ? `<div class="login-field">
+            <label for="goal">Objetivo de aprendizaje</label>
+            <select id="goal" name="goal" required>
+              ${Object.entries(GOAL_OPTIONS).map(([value,label])=>`<option value="${value}" ${value==='conversation' ? 'selected' : ''}>${label}</option>`).join('')}
+            </select>
+          </div>` : ''}
+          ${mode==='register' ? '<div class="login-field password-input-wrap"><label for="confirmPassword">Confirmar contraseña</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required /><button type="button" class="password-toggle" data-target="confirmPassword">Mostrar</button></div>' : ''}
+          <div class="login-error" id="loginError"></div>
+          <div class="login-actions">
+            <button type="submit" class="primary-btn">${mode==='login' ? 'Acceder' : 'Registrar'}</button>
+            <button type="button" id="switchMode" class="ghost-btn" style="border-color:transparent; color:var(--ink); background:transparent;">${mode==='login' ? 'Crear cuenta' : 'Volver'}</button>
+          </div>
+        </form>
+      </div>
+    </div>`;
+
+  const form = document.getElementById('loginForm');
+  form.onsubmit = event => {
+    event.preventDefault();
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value;
+    const goal = mode==='register' ? document.getElementById('goal').value : loadCredentials().goal;
+    const englishLevel = mode==='register' ? document.getElementById('englishLevel').value : loadCredentials().englishLevel;
+    const targetLevel = mode==='register' ? document.getElementById('targetLevel').value : loadCredentials().targetLevel;
+    const errorEl = document.getElementById('loginError');
+    if(mode==='login'){
+      const stored = loadCredentials();
+      if(user === stored.username && pass === stored.password){
+        sessionStorage.setItem('loggedIn','true');
+        state = freshState();
+        hideLoginScreen();
+        render();
+      } else {
+        errorEl.textContent = 'Usuario o contraseña incorrectos.';
+      }
+    } else {
+      const confirmPass = document.getElementById('confirmPassword').value;
+      if(pass.length < 8){
+        errorEl.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+        return;
+      }
+      if(pass !== confirmPass){
+        errorEl.textContent = 'Las contraseñas no coinciden.';
+        return;
+      }
+      saveCredentials({ username: user, password: pass, goal, englishLevel, targetLevel });
+      sessionStorage.setItem('loggedIn','true');
+      state = freshState();
+      hideLoginScreen();
+      render();
+    }
+  };
+
+  document.getElementById('switchMode').onclick = ()=>{ showLoginScreen(mode==='login' ? 'register' : 'login'); };
+  initializePasswordToggles();
+}
+function initializePasswordToggles(){
+  document.querySelectorAll('.password-toggle').forEach(btn=>{
+    btn.onclick = ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if(!target) return;
+      const visible = target.type === 'text';
+      target.type = visible ? 'password' : 'text';
+      btn.textContent = visible ? 'Mostrar' : 'Ocultar';
+    };
+  });
+}
+function hideLoginScreen(){ document.getElementById('loginRoot').innerHTML = ''; }
+function logout(){
+  sessionStorage.removeItem('loggedIn');
+  state = freshState();
+  showLoginScreen();
+}
+
+/* ============ STATE ============ */
+function getQuestionSteps(){ return 15; }
+function getPracticeSteps(){ return 6; }
+function getTotalSteps(){ return getQuestionSteps() + getPracticeSteps(); }
+function getLevelActivitySummary(){
+  return { questions:getQuestionSteps(), shadowing:4, writing:3, reading:2 };
+}
+function getNodeTypeForIndex(index){
+  const summary = getLevelActivitySummary();
+  if(index === 10) return 'exam';
+  if(index <= summary.questions) return 'lesson';
+  if(index === summary.questions + 1 || index === summary.questions + 3) return 'shadowing';
+  if(index === summary.questions + 2 || index === summary.questions + 4 || index === summary.questions + 6) return 'writing';
+  return 'reading';
+}
+function buildLevel(id, unlocked){
+  const nodes = [];
+  for(let i=1;i<=getTotalSteps();i++){
+    nodes.push({ index:i, type:getNodeTypeForIndex(i), status: (unlocked && i===1)?'unlocked':'locked' });
+  }
+  return { id, unlocked, nodes };
+}
+function freshState(){
+  const creds = loadCredentials();
+  const currentIndex = LEVEL_ORDER.indexOf(creds.englishLevel || 'A1');
+  const targetIndex = LEVEL_ORDER.indexOf(creds.targetLevel || creds.englishLevel || 'A1');
+  const safeTargetIndex = Math.max(currentIndex, targetIndex);
+  return {
+    currentLevelId: creds.englishLevel || 'A1',
+    levels: LEVEL_ORDER.map((id,i)=>buildLevel(id, i===currentIndex && i<=safeTargetIndex))
+  };
+}
+let state = freshState();
+let modalCtx = null; // holds current modal data
+
+function getLevel(id){ return state.levels.find(l=>l.id===id); }
+function levelCompletedCount(level){ return level.nodes.filter(n=>n.status==='completed').length; }
+function levelIsFullyDone(level){ return levelCompletedCount(level)===getTotalSteps(); }
+function getAdaptiveProfile(levelId){
+  const level = getLevel(levelId);
+  const completed = levelCompletedCount(level);
+  const ratio = completed / getTotalSteps();
+  const errorState = parseInt(localStorage.getItem(`veritasErrorState:${levelId}`) || '0', 10);
+  const baseBoost = ratio < 0.25 ? 0 : ratio < 0.6 ? 1 : 2;
+  const adjustedBoost = Math.max(0, baseBoost - Math.floor(errorState / 2));
+  if(adjustedBoost <= 0){
+    return { band:'inicio', label:'Inicio', hint:'Las preguntas se simplifican un poco cuando necesitas recuperar el ritmo.', boost:0 };
+  }
+  if(adjustedBoost === 1){
+    return { band:'progreso', label:'Progreso', hint:'Se mezclan vocabulario y gramática para reforzar lo aprendido.', boost:1 };
+  }
+  return { band:'avanzado', label:'Avanzado', hint:'Las preguntas se vuelven más abiertas y exigen mayor precisión.', boost:2 };
+}
+
+function registerMistake(levelId){
+  const key = `veritasErrorState:${levelId}`;
+  const current = parseInt(localStorage.getItem(key) || '0', 10);
+  localStorage.setItem(key, String(current + 1));
+}
+
+function resetMistakes(levelId){
+  localStorage.removeItem(`veritasErrorState:${levelId}`);
+}
+
+function unlockNext(level, index){
+  const next = level.nodes.find(n=>n.index===index+1);
+  if(next) next.status='unlocked';
+  else{
+    const li = LEVEL_ORDER.indexOf(level.id);
+    const targetIndex = LEVEL_ORDER.indexOf(loadCredentials().targetLevel || level.id);
+    if(li < LEVEL_ORDER.length-1 && li+1 <= targetIndex){
+      const nl = state.levels[li+1];
+      nl.unlocked = true;
+      nl.nodes[0].status='unlocked';
+    }
+  }
+}
+
+/* ============ RENDER ============ */
+function render(){
+  renderSidebar();
+  renderMain();
+}
+
+function renderSidebar(){
+  const wrap = document.getElementById('levelList');
+  wrap.innerHTML = '';
+  state.levels.forEach(level=>{
+    const info = LEVEL_INFO[level.id];
+    const done = levelCompletedCount(level);
+    const totalSteps = getTotalSteps();
+    const el = document.createElement('div');
+    el.className = 'level-card' + (level.id===state.currentLevelId?' active':'') + (!level.unlocked?' locked':'');
+    el.innerHTML = `
+      <div class="level-badge">${level.unlocked? level.id : '🔒'}</div>
+      <div class="level-meta">
+        <div class="name">${level.id} · ${info.name}</div>
+        <div class="sub">${done}/${totalSteps} · ${getQuestionSteps()} preguntas + ${getLevelActivitySummary().shadowing} shadowing + ${getLevelActivitySummary().writing} escrituras + ${getLevelActivitySummary().reading} lectura</div>
+        <div class="level-progress-track"><div class="level-progress-fill" style="width:${done/totalSteps*100}%"></div></div>
+      </div>`;
+    if(level.unlocked){
+      el.onclick = ()=>{ state.currentLevelId = level.id; render(); };
+    }
+    wrap.appendChild(el);
+  });
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  const level = getLevel(state.currentLevelId);
+  const info = LEVEL_INFO[level.id];
+  const done = levelCompletedCount(level);
+  const totalSteps = getTotalSteps();
+  const totalDone = state.levels.reduce((s,l)=>s+levelCompletedCount(l),0);
+  const adaptive = getAdaptiveProfile(level.id);
+  const goal = loadCredentials().goal;
+  const goalLabel = GOAL_OPTIONS[goal] || GOAL_OPTIONS.conversation;
+
+  let html = `
+    <div class="main-header">
+      <div>
+        <h1>${level.id} — ${info.name}</h1>
+        <div class="desc">Cada escalón incluye ${getQuestionSteps()} preguntas para pasar al siguiente, además de ${getLevelActivitySummary().shadowing} prácticas de shadowing, ${getLevelActivitySummary().writing} escrituras y ${getLevelActivitySummary().reading} lectura para avanzar con sentido (${adaptive.label}): ${adaptive.hint} · Objetivo: ${goalLabel}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+        <div class="overall">
+          <div class="num">${totalDone}/${state.levels.length*totalSteps}</div>
+          <div class="lbl">Progreso total</div>
+        </div>
+        <button class="primary-btn" id="logoutBtn" style="background:transparent;color:var(--ink);border:1.5px solid var(--line);">Cerrar sesión</button>
+      </div>
+    </div>
+    <div class="level-progress-row">
+      <div class="track"><div class="fill" style="width:${done/totalSteps*100}%"></div></div>
+      <div class="count">${done} / ${totalSteps}</div>
+    </div>
+    <div class="shadowing-panel">
+      <h3>Shadowing Inteligente</h3>
+      <p>Escucha una frase hablada por un modelo, repítela, compara tu voz y recibe retroalimentación específica para mejorar pronunciación, ritmo y entonación.</p>
+      <div class="shadowing-pills">
+        <div class="shadowing-pill">🎧 Escucha</div>
+        <div class="shadowing-pill">🎙 Shadowing</div>
+        <div class="shadowing-pill">📈 Comparación</div>
+        <div class="shadowing-pill">💡 Feedback</div>
+      </div>
+      <div class="shadowing-actions">
+        <button class="primary-btn" id="openShadowingBtn">Practicar shadowing</button>
+      </div>
+    </div>
+    <div class="module-grid">
+      
+      <div class="module-card"><button class="ghost-btn" id="openRoleplayBtn" style="width:100%; text-align:left;">🎭 Abrir modo Roleplay</button></div>
+    </div>
+    <div class="story-panel">
+      <h3>Story Mode</h3>
+      <p>Aprende vocabulario natural y comprensión lectora con historias adaptadas a tu nivel, audio narrado y preguntas interactivas.</p>
+      <div class="story-grid">
+        ${LEVEL_ORDER.map(id=>`<div class="story-card"><div class="title">${id}</div><div class="meta">Historias para ${LEVEL_INFO[id].name}</div><button class="ghost-btn" data-story-level="${id}">Abrir historias</button></div>`).join('')}
+      </div>
+    </div>
+    <div class="story-panel">
+      <h3>Funciones innovadoras</h3>
+      <p>Estas funciones diferencian la app y la acercan a un entrenador personal de idiomas con IA.</p>
+      <div class="story-grid">
+    </div>
+    <div class="path-wrap">`;
+
+  const blockSize = 8;
+  for(let block=0; block<Math.ceil(totalSteps/blockSize); block++){
+    const start = block*blockSize+1;
+    const end = Math.min(start+blockSize-1, totalSteps);
+    html += `<div class="block"><div class="block-title">Bloque ${block+1} · actividades ${start}–${end}</div><div class="node-row">`;
+    for(let i=start;i<=end;i++){
+      const n = level.nodes.find(x=>x.index===i);
+      if(!n){ continue; }
+      if(n.type==='writing'){
+        const label = n.status==='completed' ? '✍️' : (n.status==='locked' ? '🔒' : '✍');
+        html += `<div class="node ${n.status}" data-idx="${i}" data-kind="writing">${label}</div>`;
+      } else if(n.type==='reading'){
+        const label = n.status==='completed' ? '📚' : (n.status==='locked' ? '🔒' : '📖');
+        html += `<div class="node ${n.status}" data-idx="${i}" data-kind="reading">${label}</div>`;
+      } else if(n.type==='shadowing'){
+        const label = n.status==='completed' ? '🎙' : (n.status==='locked' ? '🔒' : '🎧');
+        html += `<div class="node ${n.status}" data-idx="${i}" data-kind="shadowing">${label}</div>`;
+      } else {
+        const label = n.status==='completed' ? '✓' : (n.status==='locked' ? '·' : i);
+        html += `<div class="node ${n.status}" data-idx="${i}" data-kind="lesson">${label}</div>`;
+      }
+      if(i<end) html += `<div class="node-connector"></div>`;
+    }
+    html += `</div></div>`;
+  }
+  html += `</div>`;
+  main.innerHTML = html;
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(logoutBtn) logoutBtn.onclick = logout;
+
+  const shadowingBtn = document.getElementById('openShadowingBtn');
+  if(shadowingBtn) shadowingBtn.onclick = ()=> openShadowingModal(level.id);
+
+  main.querySelectorAll('[data-story-level]').forEach(btn=>{
+    btn.onclick = ()=> openStoryModal(btn.dataset.storyLevel);
+  });
+
+  const roleplayBtn = document.getElementById('openRoleplayBtn');
+  if(roleplayBtn) roleplayBtn.onclick = ()=> openRoleplayModal(level.id);
+
+  main.querySelectorAll('[data-idx]').forEach(elm=>{
+    elm.addEventListener('click', ()=>{
+      const idx = parseInt(elm.dataset.idx);
+      const kind = elm.dataset.kind;
+      const node = level.nodes.find(x=>x.index===idx);
+      if(node.status==='locked') return;
+      if(kind==='lesson') openLessonModal(level.id, idx);
+      else if(kind==='reading') openStoryModal(level.id);
+      else if(kind==='shadowing') openShadowingModal(level.id);
+      else if(kind==='writing') openWritingModal(level.id, idx);
+      else openExamModal(level.id, idx);
+    });
+  });
+}
+
+/* ============ HELPERS ============ */
+function pickDistractors(pool, correctIdx, count){
+  const idxs = pool.map((_,i)=>i).filter(i=>i!==correctIdx);
+  idxs.sort(()=>Math.random()-0.5);
+  return idxs.slice(0,count);
+}
+function speak(text){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang='en-US'; u.rate=0.92;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+const SHADOWING_PHRASES = [
+  { text:'Good morning. How are you today?', level:'A1', focus:'saludos', context:'Saludo casual en una tienda o al llegar a clase.', situation:'Conversa con un amigo o un profesor.' },
+  { text:'I would like to order a coffee and a sandwich.', level:'A2', focus:'restaurante', context:'Pedido simple en un café.', situation:'Usa esta frase en un restaurante o cafetería.' },
+  { text:'I have been learning English for three months.', level:'B1', focus:'present perfect', context:'Hablar de progreso personal.', situation:'Describe tu experiencia en una entrevista o conversación informal.' },
+  { text:'If I had more time, I would travel more often.', level:'B2', focus:'condicionales', context:'Expresar planes y condiciones.', situation:'Úsala al hablar de metas o viajes.' },
+  { text:'The implications of this decision are still unclear.', level:'C1', focus:'académico', context:'Discutir ideas o análisis complejos.', situation:'Ideal para debates o reuniones profesionales.' },
+  { text:'Her argument was so nuanced that the audience paused for a moment.', level:'C2', focus:'literatura', context:'Comentar texto o análisis crítico.', situation:'Perfecta para discusiones académicas o de cultura general.' }
+];
+
+function getShadowingPrompt(levelId){
+  const levelIndex = LEVEL_ORDER.indexOf(levelId);
+  const base = SHADOWING_PHRASES[levelIndex % SHADOWING_PHRASES.length];
+  return { ...base, mode: levelIndex < 2 ? 'lento' : levelIndex < 4 ? 'normal' : 'rápido' };
+}
+
+function levenshtein(a,b){
+  const dp = Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){
+    let prev = i-1;
+    dp[0]=i;
+    for(let j=1;j<=b.length;j++){
+      const temp = dp[j];
+      const cost = a[i-1]===b[j-1]?0:1;
+      dp[j] = Math.min(dp[j]+1, dp[j-1]+1, prev+cost);
+      prev = temp;
+    }
+  }
+  return dp[b.length];
+}
+
+function getSimilarity(a,b){
+  if(!a||!b) return 0;
+  const maxLen = Math.max(a.length,b.length);
+  const dist = levenshtein(a.toLowerCase(), b.toLowerCase());
+  return Math.max(0, Math.round(100 - (dist / maxLen) * 100));
+}
+
+function computeShadowingMetrics(target, transcript){
+  const targetWords = target.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean);
+  const userWords = transcript.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean);
+  const similarity = getSimilarity(target, transcript);
+  const overlap = targetWords.filter(w=>userWords.includes(w)).length;
+  const pronunciation = Math.max(0, Math.min(100, Math.round(similarity)));
+  const fluency = Math.max(0, Math.min(100, Math.round(70 + (overlap / Math.max(1, targetWords.length)) * 20)));
+  const intonation = Math.max(0, Math.min(100, Math.round(78 + (transcript.trim() ? 12 : 0))));
+  const rhythm = Math.max(0, Math.min(100, Math.round(72 + (userWords.length === targetWords.length ? 16 : 0))));
+  const listening = Math.max(0, Math.min(100, Math.round(75 + similarity * 0.2)));
+  const finalScore = Math.round((pronunciation + fluency + intonation + rhythm + listening) / 5);
+  const difficultWords = targetWords.filter((word, index)=> index < 4 && !userWords.includes(word));
+  return { pronunciation, fluency, intonation, rhythm, listening, finalScore, difficultWords };
+}
+
+const STORY_LIBRARY = {
+  A1:[{title:'The Small Red Hat', level:'A1', length:'50–150 words', genre:'fantasía', text:'Mia found a small red hat in the garden. It was very old and beautiful. She put it on and smiled. Then she saw a little bird. The bird sang and flew around her. Mia laughed and ran to her mother. "I found a magic hat!" she said. Her mother smiled and said, "It is a lovely hat, Mia."'}],
+  A2:[{title:'The Busy Morning', level:'A2', length:'150–300 words', genre:'cotidiano', text:'Emma woke up early on Saturday morning. She made coffee, opened the window, and listened to the birds. Then she went to the market to buy fruit and bread. At the market, she met her neighbor, Mr. Daniel. He asked her why she was carrying so many bags. Emma laughed and said that she was preparing a surprise breakfast for her family. Later, she returned home and cooked pancakes. Everyone was happy, and the kitchen smelled wonderful.'}],
+  B1:[{title:'The Train to the City', level:'B1', length:'300–600 words', genre:'viajes', text:'Lucas had planned to visit his cousin in the city for a long time. On Friday evening, he packed his bag, checked the timetable, and left home early. The train was delayed because of heavy rain, and he started to worry. However, the conductor explained that the problem would be solved soon. Lucas sat near the window and watched the fields pass by. When the train finally arrived, he felt relieved and excited. He walked to his cousin’s apartment and knocked on the door. His cousin opened it with a smile and invited him inside. They talked for hours about work, music, and old memories.'}],
+  B2:[{title:'The Letter in the Attic', level:'B2', length:'600–1,000 words', genre:'misterio', text:'When Clara opened the attic door, she found a wooden box hidden behind an old curtain. Inside the box there was a letter, a silver key, and a faded photograph. The letter was addressed to her grandmother, whose name she had never heard before. Clara read it carefully and discovered that the letter had been written by a man who had once been her grandmother’s closest friend. The key belonged to a small locker in the station, and the photograph showed a young couple standing beside a train. Clara decided to investigate the story, although she did not know what she would find. The following morning, she took the train to the station and opened the locker. Inside she found a notebook filled with memories, stories, and a final message that changed her view of her family forever.'}],
+  C1:[{title:'The Quiet Experiment', level:'C1', length:'artículo avanzado', genre:'ciencia', text:'The experiment began with a simple question: what happens when silence becomes a tool rather than an absence? In the laboratory, the researchers placed participants in a room with no human interaction, no music, and no visible screens. The only sound was the steady rhythm of the air system. At first, the participants described the experience as uncomfortable and unnatural. After several sessions, however, many reported deeper concentration, stronger memory recall, and an unexpected sense of calm. The study suggested that controlled silence could improve attention and reduce mental fatigue, especially in environments saturated with constant stimulation.'}],
+  C2:[{title:'The Weight of Words', level:'C2', length:'texto auténtico', genre:'literatura', text:'Language, more than any other human invention, carries the hidden architecture of memory. A single sentence can preserve grief, delight, guilt, and longing long after the moment that produced it has disappeared. In that sense, reading is not merely an act of reception; it is a form of conversation with the dead, with the distant, and with the versions of ourselves we no longer inhabit. The writer does not only describe the world. The writer rearranges it, making silence audible and absence tangible.'}]
+};
+
+const ROLEPLAY_SCENARIOS = {
+  daily:[
+    {title:'Presentarte a alguien', description:'Saludo social y presentación básica.', level:'A1', prompt:'Hello, my name is Daniel. Nice to meet you.'},
+    {title:'Pedir direcciones', description:'Solicitar ayuda para llegar a un lugar.', level:'A2', prompt:'Excuse me, could you tell me how to get to the station?'},
+    {title:'Ir al supermercado', description:'Comprar productos y hablar con el dependiente.', level:'A1', prompt:'Hi, I need some milk and bread, please.'},
+    {title:'Comprar café', description:'Pedir en una cafetería.', level:'A2', prompt:'Can I have a coffee and a pastry, please?'}
+  ],
+  work:[
+    {title:'Primer día de trabajo', description:'Presentarte en un entorno profesional.', level:'B1', prompt:'Welcome aboard. Let me introduce you to the team.'},
+    {title:'Hablar con el supervisor', description:'Pedir aclaraciones o ayuda.', level:'B1', prompt:'Could you explain the task again, please?'},
+    {title:'Resolver una queja', description:'Atender un problema con calma.', level:'B2', prompt:'I understand your concern. Let me help solve it.'},
+    {title:'Reunión de trabajo', description:'Participar con seguridad y claridad.', level:'B1', prompt:'I would like to share an update on the project.'}
+  ],
+  love:[
+    {title:'Conocer a alguien', description:'Iniciar una conversación natural.', level:'A2', prompt:'Hi, I noticed you were reading the same book as me.'},
+    {title:'Primera cita', description:'Conversar con naturalidad y confianza.', level:'B1', prompt:'Thanks for meeting me today. I’m really glad we could talk.'},
+    {title:'Pedir disculpas', description:'Resolver un malentendido.', level:'B1', prompt:'I’m sorry for what I said earlier. I didn’t mean to hurt you.'}
+  ],
+  callcenter:[
+    {title:'Entrevista básica', description:'Presentación personal y experiencia.', level:'A2', prompt:'Tell me a little about yourself.'},
+    {title:'Cliente molesto', description:'Gestionar una llamada difícil.', level:'B2', prompt:'I’m very unhappy with your service.'},
+    {title:'Venta adicional', description:'Ofrecer más valor al cliente.', level:'B2', prompt:'Would you like to add this premium option?'}
+  ],
+  travel:[
+    {title:'En el aeropuerto', description:'Check-in y preguntas de viaje.', level:'A2', prompt:'Can you help me with my boarding pass?'},
+    {title:'En el hotel', description:'Reservar y hacer preguntas.', level:'A2', prompt:'I have a reservation for two nights.'},
+    {title:'En la estación', description:'Comprar un boleto o pedir ayuda.', level:'A2', prompt:'How much is a ticket to downtown?'}
+  ],
+  emergency:[
+    {title:'Llamar al 911', description:'Pedir ayuda en una emergencia.', level:'B1', prompt:'I need urgent help. There has been an accident.'},
+    {title:'Ir al hospital', description:'Explicar una situación médica.', level:'B1', prompt:'I feel dizzy and I need a doctor.'}
+  ],
+  school:[
+    {title:'Hablar con el profesor', description:'Pedir ayuda o aclaraciones.', level:'A2', prompt:'Could you explain the assignment again?'},
+    {title:'Presentación en clase', description:'Hablar delante del grupo.', level:'B1', prompt:'Today I’d like to talk about my research project.'}
+  ],
+  finance:[
+    {title:'Abrir una cuenta', description:'Gestionar una solicitud bancaria.', level:'B1', prompt:'I would like to open a new account, please.'},
+    {title:'Reportar fraude', description:'Explicar un problema financiero.', level:'B2', prompt:'I think there has been suspicious activity on my card.'}
+  ]
+};
+
+function openRoleplayModal(levelId){
+  const root = document.getElementById('modalRoot');
+  const categories = Object.entries(ROLEPLAY_SCENARIOS);
+  const firstCategory = categories[0][1];
+  const initialScenario = firstCategory[0];
+  const state = { levelId, category:'daily', scenario:initialScenario, feedback:'', transcript:'' };
+  renderRoleplay();
+
+  function renderRoleplay(){
+    root.innerHTML = `
+      <div class="overlay" id="overlay">
+        <div class="modal">
+          <div class="modal-head">
+            <h2>Modo Roleplay · ${levelId}</h2>
+            <button class="modal-close" id="closeBtn">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="roleplay-grid">
+              ${categories.map(([key, items])=>`<div class="roleplay-card"><div class="title">${key==='daily'?'Vida diaria':key==='work'?'Vida laboral':key==='love'?'Vida amorosa':key==='callcenter'?'Entrevistas call center':key==='travel'?'Viajes':key==='emergency'?'Emergencias':key==='school'?'Escuela y universidad':'Finanzas'}</div><div class="meta">${items.length} escenarios disponibles</div><button class="ghost-btn" data-category="${key}">Abrir</button></div>`).join('')}
+            </div>
+            <div class="roleplay-scene" style="margin-top:14px;">
+              <div style="font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.7);">Escenario</div>
+              <div style="font-weight:700; margin-top:4px;">${state.scenario.title}</div>
+              <div style="font-size:13px; margin-top:6px;">${state.scenario.description}</div>
+              <div style="margin-top:10px; font-size:14px;"><strong>IA:</strong> ${state.scenario.prompt}</div>
+            </div>
+            <div class="roleplay-actions">
+              <button class="primary-btn" id="roleplaySpeakBtn">▶ Responder</button>
+              <button class="ghost-btn" id="roleplayNextBtn">Siguiente escena</button>
+            </div>
+            <div class="roleplay-feedback" id="roleplayFeedback" style="margin-top:12px;">Tu respuesta se corregirá y se adaptará según la situación real.</div>
+          </div>
+        </div>
+      </div>`;
+
+    document.getElementById('closeBtn').onclick = closeModal;
+    document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+    root.querySelectorAll('[data-category]').forEach(btn=>{
+      btn.onclick = ()=>{
+        state.category = btn.dataset.category;
+        state.scenario = ROLEPLAY_SCENARIOS[state.category][0];
+        state.feedback = '';
+        renderRoleplay();
+      };
+    });
+
+    document.getElementById('roleplayNextBtn').onclick = ()=>{
+      const items = ROLEPLAY_SCENARIOS[state.category];
+      const nextIndex = (items.findIndex(s=>s.title===state.scenario.title)+1) % items.length;
+      state.scenario = items[nextIndex];
+      state.feedback = '';
+      renderRoleplay();
+    };
+
+    document.getElementById('roleplaySpeakBtn').onclick = ()=>{
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SpeechRecognition){
+        state.feedback = 'Tu navegador no admite voz. Puedes responder por texto en una versión futura.';
+        renderRoleplay();
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang='en-US';
+      recognition.interimResults=false;
+      recognition.continuous=false;
+      recognition.start();
+      document.getElementById('roleplayFeedback').textContent = 'Grabando... responde como si estuvieras en la escena real.';
+      recognition.onresult = event => {
+        state.transcript = event.results[0][0].transcript.trim();
+        state.feedback = 'Tu respuesta: "' + state.transcript + '". La IA la evaluará y adaptará la siguiente reacción del personaje.';
+        renderRoleplay();
+      };
+    };
+  }
+}
+
+function openStoryModal(levelId){
+  const stories = STORY_LIBRARY[levelId] || [];
+  const story = stories[0];
+  const root = document.getElementById('modalRoot');
+  if(!story){
+    root.innerHTML = `<div class="overlay"><div class="modal"><div class="modal-body"><h2>Sin historias aún</h2><p>No hay historias disponibles para este nivel todavía.</p></div></div></div>`;
+    return;
+  }
+
+  const vocab = ['found','beautiful','smiled','wonderful','delayed','relieved','investigate','memory','silence'];
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>English Stories · ${levelId}</h2>
+          <button class="modal-close" id="closeBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="story-card" style="margin-bottom:12px;">
+            <div class="title">${story.title}</div>
+            <div class="meta">Nivel ${story.level} · ${story.length} · Género: ${story.genre}</div>
+            <div class="tag">🎧 Audio narrado</div>
+          </div>
+          <div class="story-content">${story.text}</div>
+          <div class="story-vocab" id="storyVocab"></div>
+          <div class="story-quiz" id="storyQuiz"></div>
+          <div class="story-feedback" id="storyFeedback"></div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('closeBtn').onclick = closeModal;
+  document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+  const vocabWrap = document.getElementById('storyVocab');
+  vocab.forEach(word=>{
+    const chip = document.createElement('button');
+    chip.className='word';
+    chip.textContent=word;
+    chip.onclick = ()=>{
+      document.getElementById('storyFeedback').textContent = `${word}: meaning → ${word === 'found' ? 'encontró' : word === 'beautiful' ? 'hermoso' : word === 'smiled' ? 'sonrió' : word === 'wonderful' ? 'maravilloso' : word === 'delayed' ? 'retrasado' : word === 'relieved' ? 'aliviado' : word === 'investigate' ? 'investigar' : word === 'memory' ? 'memoria' : 'silencio'}`;
+    };
+    vocabWrap.appendChild(chip);
+  });
+
+  const quiz = document.getElementById('storyQuiz');
+  const isEnglishLevel = levelId !== 'A1';
+  const questions = [
+    {q: isEnglishLevel ? 'What did Mia do?' : '¿Qué hizo Mia?', options:['Found a hat','Bought a car','Went to bed'], answer:'Found a hat'},
+    {q: isEnglishLevel ? 'Where was the box?' : '¿Dónde estaba la caja?', options:['In the attic','In the kitchen','In the river'], answer:'In the attic'}
+  ];
+  questions.forEach((item, idx)=>{
+    const block = document.createElement('div');
+    block.innerHTML = `<div style="font-weight:600; margin-bottom:6px;">${idx+1}. ${item.q}</div>`;
+    item.options.forEach(opt=>{
+      const btn = document.createElement('button');
+      btn.className='opt';
+      btn.textContent = opt;
+      btn.onclick = ()=>{
+        if(opt===item.answer){
+          document.getElementById('storyFeedback').textContent = isEnglishLevel ? '✓ Correct answer.' : '✓ Respuesta correcta.';
+        } else {
+          document.getElementById('storyFeedback').textContent = isEnglishLevel ? 'Try again.' : 'Inténtalo de nuevo.';
+        }
+      };
+      block.appendChild(btn);
+    });
+    quiz.appendChild(block);
+  });
+}
+
+const SHADOWING_SCENES = [
+  { title:'Airport Check-in', icon:'✈️', context:'Llegada a un aeropuerto y registro de maletas.', phrase:'Excuse me, where is the check-in desk?' },
+  { title:'Restaurant Conversation', icon:'🍽️', context:'Pedir comida en un restaurante.', phrase:'Can I have the menu, please?' },
+  { title:'Hotel Reception', icon:'🏨', context:'Reservar una habitación o hacer preguntas.', phrase:'I have a reservation for tonight.' },
+  { title:'Work Meeting', icon:'💼', context:'Participar en una reunión profesional.', phrase:'Let me explain my idea in more detail.' }
+];
+
+function openShadowingModal(levelId){
+  const prompt = getShadowingPrompt(levelId);
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>Shadowing Inteligente</h2>
+          <button class="modal-close" id="closeBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="shadowing-phrase">${prompt.text}</div>
+          <div class="shadowing-meta" style="margin-top:8px;">Modo sugerido: ${prompt.mode} · Enfoque: ${prompt.focus}</div>
+          <div class="shadowing-tip" style="margin-top:10px;">Contexto: ${prompt.context}<br>Situación: ${prompt.situation}</div>
+          <div class="scene-grid">
+            ${SHADOWING_SCENES.map(scene=>`<div class="scene-card">
+              <div class="thumb">${scene.icon}</div>
+              <div class="title">${scene.title}</div>
+              <div class="meta">${scene.context}</div>
+              <button class="ghost-btn" data-scene-phrase="${scene.phrase}">Usar escena</button>
+            </div>`).join('')}
+          </div>
+          <div class="shadowing-actions" style="margin-top:14px;">
+            <button class="primary-btn" id="playShadowBtn">▶ Escuchar</button>
+            <button class="ghost-btn" id="recordShadowBtn">🎙 Repetir</button>
+          </div>
+          <div class="shadowing-status" id="shadowingStatus" style="margin-top:14px;">Escucha la frase y repítela intentando imitar el ritmo y la entonación.</div>
+          <div class="shadowing-score" style="margin-top:14px;" id="shadowingScore"></div>
+          <div class="shadowing-tip" id="shadowingTip" style="margin-top:14px;">La IA compara tu voz con el modelo y señala las palabras que más necesitan apoyo.</div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('closeBtn').onclick = closeModal;
+  document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+  const playBtn = document.getElementById('playShadowBtn');
+  const recordBtn = document.getElementById('recordShadowBtn');
+  const statusEl = document.getElementById('shadowingStatus');
+  const scoreEl = document.getElementById('shadowingScore');
+  const tipEl = document.getElementById('shadowingTip');
+  const phraseEl = document.querySelector('.shadowing-phrase');
+
+  playBtn.onclick = ()=>{ speak(prompt.text); statusEl.textContent='Escucha la frase y repítela con el mismo ritmo.'; };
+
+  root.querySelectorAll('[data-scene-phrase]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const phrase = btn.getAttribute('data-scene-phrase');
+      if(phraseEl) phraseEl.textContent = phrase;
+      statusEl.textContent = `Escena activa: ${phrase}`;
+      speak(phrase);
+    };
+  });
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    statusEl.textContent='Tu navegador no admite reconocimiento de voz. Puedes escuchar la frase y practicar manualmente.';
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang='en-US';
+  recognition.interimResults=false;
+  recognition.continuous=false;
+
+  recordBtn.onclick = ()=>{
+    statusEl.textContent='Grabando... di la frase en voz alta.';
+    recognition.start();
+  };
+
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript.trim();
+    const metrics = computeShadowingMetrics(prompt.text, transcript);
+    scoreEl.innerHTML = `
+      <div class="score-item"><div class="v" style="color:var(--teal)">${metrics.pronunciation}%</div><div class="l">Pronunciación</div></div>
+      <div class="score-item"><div class="v" style="color:var(--teal)">${metrics.fluency}%</div><div class="l">Fluidez</div></div>
+      <div class="score-item"><div class="v" style="color:var(--gold)">${metrics.intonation}%</div><div class="l">Entonación</div></div>
+      <div class="score-item"><div class="v" style="color:var(--teal)">${metrics.rhythm}%</div><div class="l">Ritmo</div></div>
+      <div class="score-item"><div class="v" style="color:var(--ink)">${metrics.finalScore}/100</div><div class="l">Puntuación final</div></div>`;
+    const difficult = metrics.difficultWords.length ? `Palabras a trabajar: ${metrics.difficultWords.join(', ')}.` : 'Tu pronunciación fue muy cercana al modelo.';
+    tipEl.innerHTML = `<strong>Retroalimentación:</strong> ${metrics.finalScore >= 85 ? 'Muy bien. Tu voz se acercó al modelo.' : 'Repite la frase con más énfasis en las sílabas fuertes.'}<br>${difficult}`;
+    statusEl.textContent = transcript ? `Tu grabación: “${transcript}”` : 'No se detectó audio suficiente.';
+  };
+
+  recognition.onerror = ()=>{
+    statusEl.textContent='No se pudo completar la grabación. Inténtalo de nuevo en un entorno con menos ruido.';
+  };
+}
+
+/* ============ LESSON MODAL ============ */
+function openWritingModal(levelId, idx){
+  const level = getLevel(levelId);
+  const content = CONTENT[levelId];
+  const practiceIndex = idx - 10;
+  const prompts = [
+    content.writing.prompt,
+    `Amplía tu respuesta anterior añadiendo dos detalles más y usa un conector como "because", "then" o "however".`,
+    `Reescribe tu texto con mayor claridad, añade vocabulario nuevo y corrige errores de gramática.`
+  ];
+  const prompt = prompts[practiceIndex - 1] || prompts[0];
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>${levelId} · Escritura ${practiceIndex}</h2>
+          <button class="modal-close" id="closeBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">${prompt}</div>
+          <textarea class="write-area" id="writeArea" placeholder="Escribe tu respuesta en inglés..."></textarea>
+          <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+            <button class="primary-btn" id="writeSubmit">Enviar texto</button>
+            <div class="wc" id="writeCount">0 palabras</div>
+          </div>
+          <div class="feedback" id="writeFeedback"></div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('closeBtn').onclick = closeModal;
+  document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+  const area = document.getElementById('writeArea');
+  const countEl = document.getElementById('writeCount');
+  area.oninput = ()=>{
+    const words = area.value.trim().split(/\s+/).filter(Boolean).length;
+    countEl.textContent = `${words} palabras`;
+  };
+
+  document.getElementById('writeSubmit').onclick = ()=>{
+    const text = area.value.trim();
+    const words = text.split(/\s+/).filter(Boolean);
+    const lower = text.toLowerCase();
+    const stopHits = STOPWORDS.filter(s=> new RegExp('\\b'+s+'\\b').test(lower)).length;
+    const pass = words.length >= content.writing.min && stopHits >= 2;
+    const node = level.nodes.find(n=>n.index===idx);
+    if(pass){
+      node.status='completed';
+      unlockNext(level, idx);
+      document.getElementById('writeFeedback').className='feedback ok';
+      document.getElementById('writeFeedback').textContent = '✓ Buen trabajo. Tu escritura cumple con el objetivo y quedó registrada.';
+    } else {
+      document.getElementById('writeFeedback').className='feedback bad';
+      document.getElementById('writeFeedback').textContent = '✗ Aún falta extensión o vocabulario. Revisa el texto y envía una versión mejor.';
+    }
+    document.getElementById('writeSubmit').textContent = 'Cerrar';
+    document.getElementById('writeSubmit').onclick = ()=>{ closeModal(); render(); };
+  };
+}
+
+function openLessonModal(levelId, idx){
+  const level = getLevel(levelId);
+  const content = CONTENT[levelId];
+  const adaptive = getAdaptiveProfile(levelId);
+  const completed = levelCompletedCount(level);
+  const questionCount = getQuestionSteps();
+  const questions = [];
+  const verbGuide = {
+    study:'se usa para hablar de aprender o practicar',
+    work:'se usa para hablar de empleo o actividad',
+    travel:'se usa para hablar de moverse de un lugar a otro',
+    learn:'se usa para hablar de adquirir conocimiento',
+    speak:'se usa para comunicar ideas o información',
+    write:'se usa para producir textos',
+    read:'se usa para comprender textos',
+    live:'se usa para hablar de residir en un lugar',
+    help:'se usa para ofrecer asistencia',
+    make:'se usa para crear o producir algo',
+    play:'se usa para hablar de juegos, música o actividades',
+    eat:'se usa para hablar de consumir comida',
+    go:'se usa para hablar de movimiento o ir a un sitio',
+    take:'se usa para hablar de tomar algo o llevar tiempo',
+    see:'se usa para hablar de observar'
+  };
+
+  for(let i=0;i<questionCount;i++){
+    if(i % 2 === 0){
+      const grammarIdx = (idx + i + completed + adaptive.boost) % content.grammar.length;
+      const g = content.grammar[grammarIdx];
+      questions.push({
+        q:g.q,
+        options:[...g.o].sort(()=>Math.random()-0.5),
+        answer:g.a,
+        verbLabel:'use',
+        verbUse:'se usa para construir frases correctas según la estructura.'
+      });
+    } else {
+      const vocabIdx = (idx + i + completed + adaptive.boost*2) % content.vocab.length;
+      const [en,es] = content.vocab[vocabIdx];
+      const distIdxs = pickDistractors(content.vocab, vocabIdx, 3);
+      const options = [...distIdxs.map(j=>content.vocab[j][1]), es].sort(()=>Math.random()-0.5);
+      const verbKey = en.toLowerCase();
+      const verbLabel = Object.prototype.hasOwnProperty.call(verbGuide, verbKey) ? verbKey : 'use';
+      const isEnglishLevel = levelId !== 'A1';
+      questions.push({
+        q: isEnglishLevel ? `What does "${en}" mean?` : `¿Qué significa "${en}"?`,
+        options,
+        answer:es,
+        verbLabel,
+        verbUse: verbLabel === 'use' ? (isEnglishLevel ? 'is used to express actions and build sentences.' : 'se usa para expresar acciones y construir oraciones.') : verbGuide[verbLabel]
+      });
+    }
+  }
+
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>${levelId} · Escalón ${idx}</h2>
+          <button class="modal-close" id="closeBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="margin-bottom:12px; padding:10px 12px; border-radius:10px; background:var(--paper-light); border:1px solid var(--line); font-size:13px; color:var(--ink-soft);">
+            <strong>Adaptación:</strong> ${adaptive.label} · ${adaptive.hint}
+          </div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">${levelId === 'A1' ? 'Completa estas 15 preguntas para pasar al siguiente escalón.' : 'Complete these 15 questions to move to the next step.'}</div>
+          <div id="lessonQuestions"></div>
+          <div class="feedback" id="fb"></div>
+          <div style="margin-top:16px; display:flex; gap:10px;">
+            <button class="primary-btn" id="submitBtn">Comprobar</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('closeBtn').onclick = closeModal;
+  document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+  const wrap = document.getElementById('lessonQuestions');
+  const picked = Array(questionCount).fill(null);
+  questions.forEach((item, qi)=>{
+    const block = document.createElement('div');
+    block.style.marginBottom='14px';
+    block.innerHTML = `<div class="qtext" style="font-size:14px; margin-bottom:6px;">${qi+1}. ${item.q}</div><div class="options" data-qi="${qi}"></div>`;
+    wrap.appendChild(block);
+    const optWrap = block.querySelector('.options');
+    item.options.forEach(opt=>{
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=opt;
+      b.onclick = ()=>{
+        picked[qi]=opt;
+        optWrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+        b.classList.add('selected');
+      };
+      optWrap.appendChild(b);
+    });
+  });
+
+  document.getElementById('submitBtn').onclick = ()=>{
+    const correctCount = questions.filter((item, qi)=>picked[qi]===item.answer).length;
+    const pass = correctCount >= 12;
+    wrap.querySelectorAll('.options').forEach((optWrap, qi)=>{
+      const item = questions[qi];
+      const buttons = optWrap.querySelectorAll('.opt');
+      buttons.forEach(btn=>{
+        if(btn.textContent===item.answer) btn.classList.add('correct');
+        else if(btn.textContent===picked[qi] && picked[qi]!==item.answer) btn.classList.add('incorrect');
+        btn.onclick=null;
+      });
+    });
+    const feedback = document.getElementById('fb');
+    if(pass){
+      resetMistakes(levelId);
+      feedback.className='feedback ok';
+      feedback.innerHTML = levelId === 'A1'
+        ? `✓ Has aprobado con ${correctCount}/${questionCount} aciertos. Escalón completado. <br><strong>Feedback breve:</strong> ${questions.slice(0,5).map(q=>`• ${q.verbLabel}: ${q.verbUse}`).join(' ')} ... y así se usa lo que viste en contexto.`
+        : `✓ You passed with ${correctCount}/${questionCount} correct answers. Step completed. <br><strong>Brief feedback:</strong> ${questions.slice(0,5).map(q=>`• ${q.verbLabel}: ${q.verbUse}`).join(' ')} ... this is how the language you studied is used in context.`;
+      const node = level.nodes.find(n=>n.index===idx);
+      node.status='completed';
+      unlockNext(level, idx);
+    } else {
+      registerMistake(levelId);
+      feedback.className='feedback bad';
+      feedback.innerHTML = levelId === 'A1'
+        ? `✗ Alcanzaste ${correctCount}/${questionCount}. Revisa las respuestas y vuelve a intentarlo. <br><strong>Feedback breve:</strong> ${questions.slice(0,4).map(q=>`• ${q.verbLabel}: ${q.verbUse}`).join(' ')}`
+        : `✗ You reached ${correctCount}/${questionCount}. Review your answers and try again. <br><strong>Brief feedback:</strong> ${questions.slice(0,4).map(q=>`• ${q.verbLabel}: ${q.verbUse}`).join(' ')}`;
+    }
+    const btn = document.getElementById('submitBtn');
+    btn.textContent='Cerrar';
+    btn.onclick = ()=>{ closeModal(); render(); };
+  };
+}
+
+/* ============ EXAM MODAL ============ */
+function openExamModal(levelId, idx){
+  const content = CONTENT[levelId];
+  const block = Math.floor(idx/10)-1; // 0..4
+  const gOffset = (block*3) % content.grammar.length;
+  const vOffset = (block*3) % content.vocab.length;
+
+  const grammarQs = [0,1,2].map(k=>{
+    const g = content.grammar[(gOffset+k)%content.grammar.length];
+    const opts = [...g.o].sort(()=>Math.random()-0.5);
+    return {q:g.q, opts, a:g.a, picked:null};
+  });
+  const oralQs = [0,1,2].map(k=>{
+    const vi = (vOffset+k)%content.vocab.length;
+    const [en,es] = content.vocab[vi];
+    const distIdxs = pickDistractors(content.vocab, vi, 3);
+    const opts = [...distIdxs.map(i=>content.vocab[i][1]), es].sort(()=>Math.random()-0.5);
+    return {word:en, opts, a:es, picked:null};
+  });
+
+  modalCtx = {
+    levelId, idx, tab:'oral',
+    grammarQs, oralQs,
+    writing:{text:'', done:false, pass:false},
+    grammarSubmitted:false, oralSubmitted:false
+  };
+  renderExamModal();
+}
+
+function renderExamModal(){
+  const ctx = modalCtx;
+  const content = CONTENT[ctx.levelId];
+  const root = document.getElementById('modalRoot');
+
+  const oralDone = ctx.oralSubmitted;
+  const gramDone = ctx.grammarSubmitted;
+  const writeDone = ctx.writing.done;
+
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>${ctx.levelId} · Examen ${ctx.idx}</h2>
+          <button class="modal-close" id="closeBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="tabs">
+            <div class="tab ${ctx.tab==='oral'?'active':''} ${oralDone?'done':''}" data-tab="oral">ORAL ${oralDone?'✓':''}</div>
+            <div class="tab ${ctx.tab==='grammar'?'active':''} ${gramDone?'done':''}" data-tab="grammar">GRAMÁTICA ${gramDone?'✓':''}</div>
+            <div class="tab ${ctx.tab==='writing'?'active':''} ${writeDone?'done':''}" data-tab="writing">ESCRITO ${writeDone?'✓':''}</div>
+          </div>
+          <div id="tabBody"></div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('closeBtn').onclick = closeModal;
+  document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+  root.querySelectorAll('.tab').forEach(t=>{
+    t.onclick = ()=>{ ctx.tab = t.dataset.tab; renderExamModal(); };
+  });
+
+  const body = document.getElementById('tabBody');
+  if(ctx.tab==='oral') renderOralTab(body);
+  else if(ctx.tab==='grammar') renderGrammarTab(body);
+  else renderWritingTab(body, content);
+
+  maybeShowFinalSummary();
+}
+
+function renderOralTab(body){
+  const ctx = modalCtx;
+  let html = `<div style="font-size:13px;color:var(--muted);margin-bottom:14px;">Escucha cada palabra y elige su traducción correcta.</div>`;
+  ctx.oralQs.forEach((item,i)=>{
+    html += `<div style="margin-bottom:18px;">
+      <div class="listen-box">
+        <button class="listen-btn" data-speak="${item.word.replace(/"/g,'&quot;')}">🔊</button>
+        <div class="listen-hint">Pregunta ${i+1} de 3 — pulsa para escuchar</div>
+      </div>
+      <div class="options" data-oral-idx="${i}"></div>
+    </div>`;
+  });
+  html += `<button class="primary-btn" id="oralSubmit" ${ctx.oralSubmitted?'disabled':''}>${ctx.oralSubmitted?'Enviado':'Comprobar sección oral'}</button>`;
+  body.innerHTML = html;
+
+  body.querySelectorAll('[data-speak]').forEach(b=> b.onclick = ()=> speak(b.dataset.speak));
+
+  ctx.oralQs.forEach((item,i)=>{
+    const wrap = body.querySelector(`[data-oral-idx="${i}"]`);
+    item.opts.forEach(opt=>{
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=opt;
+      if(item.picked===opt) b.classList.add('selected');
+      if(ctx.oralSubmitted){
+        b.disabled=true;
+        if(opt===item.a) b.classList.add('correct');
+        else if(opt===item.picked) b.classList.add('incorrect');
+      } else {
+        b.onclick = ()=>{ item.picked=opt; renderExamModal(); modalCtx.tab='oral'; };
+      }
+      wrap.appendChild(b);
+    });
+  });
+
+  const submitBtn = body.querySelector('#oralSubmit');
+  if(submitBtn && !ctx.oralSubmitted){
+    submitBtn.disabled = ctx.oralQs.some(q=>!q.picked);
+    submitBtn.onclick = ()=>{ ctx.oralSubmitted = true; renderExamModal(); };
+  }
+}
+
+function renderGrammarTab(body){
+  const ctx = modalCtx;
+  let html = `<div style="font-size:13px;color:var(--muted);margin-bottom:14px;">Elige la opción gramaticalmente correcta.</div>`;
+  ctx.grammarQs.forEach((item,i)=>{
+    html += `<div style="margin-bottom:16px;">
+      <div class="qtext" style="font-size:14.5px;">${i+1}. ${item.q}</div>
+      <div class="options" data-g-idx="${i}"></div>
+    </div>`;
+  });
+  html += `<button class="primary-btn" id="gramSubmit" ${ctx.grammarSubmitted?'disabled':''}>${ctx.grammarSubmitted?'Enviado':'Comprobar sección gramatical'}</button>`;
+  body.innerHTML = html;
+
+  ctx.grammarQs.forEach((item,i)=>{
+    const wrap = body.querySelector(`[data-g-idx="${i}"]`);
+    item.opts.forEach(opt=>{
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=opt;
+      if(item.picked===opt) b.classList.add('selected');
+      if(ctx.grammarSubmitted){
+        b.disabled=true;
+        if(opt===item.a) b.classList.add('correct');
+        else if(opt===item.picked) b.classList.add('incorrect');
+      } else {
+        b.onclick = ()=>{ item.picked=opt; renderExamModal(); modalCtx.tab='grammar'; };
+      }
+      wrap.appendChild(b);
+    });
+  });
+
+  const submitBtn = body.querySelector('#gramSubmit');
+  if(submitBtn && !ctx.grammarSubmitted){
+    submitBtn.disabled = ctx.grammarQs.some(q=>!q.picked);
+    submitBtn.onclick = ()=>{ ctx.grammarSubmitted = true; renderExamModal(); };
+  }
+}
+
+function renderWritingTab(body, content){
+  const ctx = modalCtx;
+  const wc = ctx.writing.text.trim().split(/\s+/).filter(Boolean).length;
+  body.innerHTML = `
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">${content.writing.prompt}</div>
+    <textarea class="write-area" id="writeArea" placeholder="Escribe tu respuesta en inglés..." ${ctx.writing.done?'disabled':''}>${ctx.writing.text}</textarea>
+    <div class="wc">${wc} / ${content.writing.min} palabras mínimas</div>
+    <div style="margin-top:12px;">
+      <button class="primary-btn" id="writeSubmit" ${ctx.writing.done?'disabled':''}>${ctx.writing.done?'Enviado':'Enviar texto'}</button>
+    </div>
+    <div class="feedback ${ctx.writing.done?(ctx.writing.pass?'ok':'bad'):''}" id="writeFb">
+      ${ctx.writing.done ? (ctx.writing.pass ? '✓ Texto aceptado: cumple la extensión y muestra vocabulario en inglés.' : '✗ Aún no cumple lo mínimo requerido (extensión o vocabulario en inglés). Puedes reescribirlo.') : ''}
+    </div>`;
+
+  const area = document.getElementById('writeArea');
+  if(!ctx.writing.done){
+    area.oninput = ()=>{ ctx.writing.text = area.value; document.querySelector('.wc').textContent = `${area.value.trim().split(/\s+/).filter(Boolean).length} / ${content.writing.min} palabras mínimas`; };
+    document.getElementById('writeSubmit').onclick = ()=>{
+      const text = area.value.trim();
+      const words = text.split(/\s+/).filter(Boolean);
+      const lower = text.toLowerCase();
+      const stopHits = STOPWORDS.filter(s=> new RegExp('\\b'+s+'\\b').test(lower)).length;
+      const pass = words.length >= content.writing.min && stopHits >= 2;
+      ctx.writing.text = text; ctx.writing.done = true; ctx.writing.pass = pass;
+      renderExamModal(); modalCtx.tab='writing';
+    };
+  } else {
+    document.getElementById('writeSubmit').onclick = ()=>{
+      ctx.writing.done = false; renderExamModal(); modalCtx.tab='writing';
+    };
+    document.getElementById('writeSubmit').disabled = false;
+    document.getElementById('writeSubmit').textContent = 'Reescribir';
+  }
+}
+
+function maybeShowFinalSummary(){
+  const ctx = modalCtx;
+  if(!(ctx.oralSubmitted && ctx.grammarSubmitted && ctx.writing.done)) return;
+
+  const oralScore = ctx.oralQs.filter(q=>q.picked===q.a).length;
+  const gramScore = ctx.grammarQs.filter(q=>q.picked===q.a).length;
+  const writePass = ctx.writing.pass;
+  const oralPass = oralScore>=2, gramPass = gramScore>=2;
+  const allPass = oralPass && gramPass && writePass;
+
+  const level = getLevel(ctx.levelId);
+  const node = level.nodes.find(n=>n.index===ctx.idx);
+  if(allPass && node.status!=='completed'){
+    node.status='completed';
+    unlockNext(level, ctx.idx);
+  }
+
+  const body = document.getElementById('tabBody');
+  const banner = document.createElement('div');
+  banner.className='exam-summary';
+  banner.style.marginTop='22px';
+  banner.style.borderTop='1px solid var(--line)';
+  banner.style.paddingTop='20px';
+  banner.innerHTML = `
+    <div class="big-icon">${allPass?'🏅':'📋'}</div>
+    <h3>${allPass?'Examen superado con integridad':'Examen no superado aún'}</h3>
+    <p>${allPass?'Has demostrado un dominio genuino de este bloque. El siguiente tramo queda desbloqueado.':'Repasa las secciones marcadas en rojo y vuelve a intentarlo cuando estés listo.'}</p>
+    <div class="score-row">
+      <div class="score-item"><div class="v" style="color:${oralPass?'var(--teal)':'var(--coral)'}">${oralScore}/3</div><div class="l">Oral</div></div>
+      <div class="score-item"><div class="v" style="color:${gramPass?'var(--teal)':'var(--coral)'}">${gramScore}/3</div><div class="l">Gramática</div></div>
+      <div class="score-item"><div class="v" style="color:${writePass?'var(--teal)':'var(--coral)'}">${writePass?'OK':'—'}</div><div class="l">Escrito</div></div>
+    </div>
+    <div style="margin-top:10px; font-size:13px; color:var(--muted);">Feedback breve: los verbos trabajados se usan para expresar acciones concretas como estudiar, trabajar, viajar, hablar, leer y escribir; la idea es aplicarlos en contexto y no solo memorizar su traducción.</div>
+    <button class="primary-btn" id="finishExam" style="margin-top:10px;">${allPass?'Continuar':'Cerrar'}</button>
+    ${!allPass?'<div style="margin-top:10px;"><button class="ghost-btn" id="retryExam">Reintentar examen</button></div>':''}
+  `;
+  body.appendChild(banner);
+  document.getElementById('finishExam').onclick = ()=>{ closeModal(); render(); };
+  const retryBtn = document.getElementById('retryExam');
+  if(retryBtn) retryBtn.onclick = ()=>{ openExamModal(ctx.levelId, ctx.idx); };
+}
+
+/* ============ MISC ============ */
+function closeModal(){
+  document.getElementById('modalRoot').innerHTML='';
+  modalCtx=null;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+}
+document.getElementById('resetBtn').onclick = ()=>{
+  if(confirm('¿Reiniciar todo el progreso de esta sesión?')){
+    state = freshState();
+    render();
+  }
+};
+const logoutBtn = document.getElementById('logoutBtn');
+if(logoutBtn) logoutBtn.onclick = logout;
+
+if(isAuthenticated()) render();
+else showLoginScreen();
+</script>
+</body>
+</html>
